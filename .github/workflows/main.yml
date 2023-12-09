@@ -48,7 +48,7 @@ jobs:
       
     - name: Convert to PDF
       run: |
-        pandoc index.md -o output.pdf
+        pandoc index.md -o output.pdf --pdf-engine=xelatex
 
 
     - name: Create Release
