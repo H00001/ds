@@ -22,18 +22,20 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
+    - name: Install Pandoc
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc
+        sudo apt-get install texlive-xetex
+
+
     - name: Execute Script
       run: |
-        CURRENT_DIR=$(cd $(dirname $0); pwd)
-        if test -f output_*.md; then
-          rm output_*.md
-        fi
-
         for i in {1..11}; do 
           cat ${i}.md >> output_0.md
         done
 
-        python3 ./script/add_index.py ${CURRENT_DIR}/output_0.md ${CURRENT_DIR}/output_1.md 
+        python3 ./script/add_index.py output_0.md output_1.md 
         rm output_0.md
 
         cat h-0.md copyright.md h-1.md 0.md id.md output_1.md l-1.md l-2.md > index.md
@@ -43,5 +45,32 @@ jobs:
         fi
 
         echo 'file index.md has been created'
+      
+    - name: Convert to PDF
+      run: |
+        pandoc index.md -o output.pdf --pdf-engine=xelatex --ignore='.*not\ found.*'
+
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        body: Automated release.
+
+    - name: Upload PDF to Release
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output.pdf
+        asset_name: output.pdf
+        asset_content_type: application/pdf
+
 
  
