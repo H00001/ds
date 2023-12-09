@@ -48,11 +48,7 @@ jobs:
       
     - name: Convert to PDF
       run: |
-<<<<<<< HEAD
-        pandoc index.md -o output.pdf --pdf-engine=xelatex --ignore='.*not\ found.*'
-=======
         pandoc index.md -o output.pdf --pdf-engine=xelatex
->>>>>>> forYB
 
 
     - name: Create Release
