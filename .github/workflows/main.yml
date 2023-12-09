@@ -26,6 +26,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y pandoc
+        sudo apt-get install texlive-xetex
+
 
     - name: Execute Script
       run: |
