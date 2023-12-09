@@ -22,6 +22,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
+    - name: Install Pandoc
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc
+
     - name: Execute Script
       run: |
         for i in {1..11}; do 
@@ -38,5 +43,32 @@ jobs:
         fi
 
         echo 'file index.md has been created'
+      
+    - name: Convert to PDF
+      run: |
+        pandoc index.md -o output.pdf
+
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        body: Automated release.
+
+    - name: Upload PDF to Release
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output.pdf
+        asset_name: output.pdf
+        asset_content_type: application/pdf
+
 
  
