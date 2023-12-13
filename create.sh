@@ -11,7 +11,7 @@ done
 python3 ./script/add_index.py ${CURRENT_DIR}/output_0.md ${CURRENT_DIR}/output_1.md 
 rm output_0.md
 
-cat  h-0.md copyright.md h-1.md 0.md id.md output_1.md l-1.md l-2.md > index.md
+cat  h-0.md copyright.md h-1.md 0.md output_1.md l-1.md l-2.md > index.md
 
 if test -f output_*.md; then
 	rm output_*.md
